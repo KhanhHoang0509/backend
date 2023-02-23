@@ -1,0 +1,32 @@
+
+<!--<!doctype html>
+<html lang="en">
+<head>
+    <title th:text="${message}"></title>
+</head>
+<body>
+<table border="1">
+    <tr><td>Error Message</td><td th:text="${message}"></td></tr>
+    <tr><td>Status Code</td><td th:text="${status}"></td></tr>
+    <tr><td>Exception</td><td th:text="${exception}"></td></tr>
+    <tr><td>Stacktrace</td><td><pre th:text="${trace}"></pre></td></tr>
+    <tr><td>Binding Errors</td><td th:text="${errors}"></td></tr>
+</table>
+</body>
+</html>-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragments :: page_head('Error - Shopping Cart Admin', 'none')">
+    
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="navigation :: menu"></div>
+
+        <div class="m-3">
+            <h2>Sorry, an unexpected has occurred</h2>
+        </div>
+        <div th:replace="fragments :: footer"></div>
+    </div>
+</body>
+</html>

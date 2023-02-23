@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Users - Shopping Cart Admin','none')"></head>
+<body>
+   <div class="container-fluid">
+        <div th:replace="navigation :: menu"></div>
+
+        <div class="exporter"> 
+            <h2>Manage Users</h2>
+            <a th:href="@{/users/new}" class="fas fa-user-plus fa-2x icon-dark mr-2"></a>
+            <a th:href="@{/users/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+            <a th:href="@{/users/export/excel}"  class="fas fa-file-excel fa-2x icon-dark mr-2"></a>
+            <a th:href="@{/users/export/pdf}"  class="fas fa-file-pdf fa-2x icon-dark"></a>
+        </div>
+
+        <!--/users/page/1?sortField=firstName&sortDir=asc@keyword=bruce-->
+        <!-- name của input sẽ thành các param trên đường dẫn -->
+        <!-- Các thẻ input sẽ được chuyển thành Param -->
+        <!-- $ để lấy giá trị từ bên Model -->
+        <!-- Method Dạng GET sẽ chuyển các input thành các PARAM sau dấu chấm hỏi trên đường dẫn -->
+        
+        <div th:replace="fragments :: search_form_and_message('/users')"></div>
+
+        <div class="full-details">
+            <table class="table table-bordered table-striped table-hover table-reponsive-xl">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="hideable-column">
+                            <th th:replace="fragments :: column_link('id', 'User ID', 'tag')"></th>
+                        </th>
+
+                        <th>Photos</th>
+
+                        <th class="hideable-column">
+                            <th th:replace="fragments :: column_link('email', 'E-mail', 'tag')"></th>
+                        </th>
+
+                        <th th:replace="fragments :: column_link('firstName', 'First Name', 'none')"></th>
+                        <th th:replace="fragments :: column_link('lastName', 'Last Name', 'none')"></th>
+
+                        <th>Roles</th>
+
+                        <th th:replace="fragments :: column_link('enabled', 'Enabled', 'none')"></th>
+                        
+                        <th>
+                            <span>Edit</span>
+                            <span>Delete</span>
+                        </th>
+                     
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${listUsers}">
+
+                        <td class="hideable-column">[[${user.id}]]</td>
+                        <td>
+                            <div th:replace="fragments :: user_photos"></div>
+                        </td>
+                        <td class="hideable-column">[[${user.email}]]</td>
+                        <td>[[${user.firstName}]]</td>
+                        <td>[[${user.lastName}]]</td>
+                        <td>[[${user.roles}]]</td>
+                        <td>
+                            <div th:replace="fragments :: status(${user.enabled}, 'users', '/users/'+${user.id})"></div>
+                        </td>
+                        <td>
+                            <div th:replace="fragments :: edit('user', '/users/edit/' + ${user.id})"></div>
+                            &nbsp;&nbsp;
+                            <div th:replace="fragments :: delete('user', ${user.id},'/users/delete/' + ${user.id}, true)"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="less-details ">
+            <div class="row m-1" th:each="user : ${listUsers}">
+
+                <div class="col-4">
+                    <img th:src="@{/images/default-user.png}" width="50px" alt="">
+                </div>
+
+                <div class="col-8">
+                    <div > [[${user.fullName}]]</div>
+                    <div > [[${user.roles}]]</div>
+                    <div class="mt-2">
+                        <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green" th:href="@{'/users/' + ${user.id} + '/enabled/false'}" th:tittle="'Disable this ' + 'user'"></a>
+                        <a th:if="${user.enabled == false}"  th:href="@{'/users/' + ${user.id} + '/enabled/true'}" th:tittle="'Enabled this ' + 'user'"  class="fas fa-circle fa-2x icon-dark"></a>
+                        &nbsp;
+                        <a th:href="@{'/users/edit/' + ${user.id}}" th:tittle="'Edit this' + 'user'" class="fas fa-edit fa-2x icon-green"></a>
+                        &nbsp;&nbsp;
+                        <a th:href="@{'/users/delete/' + ${user.id}, true}" th:entityId="${user.id}" th:tittle="'Delete this' + 'user'" class="fas fa-trash fa-2x icon-dark link-delete"></a>
+                    </div>
+                </div>  
+            </div>
+        </div>
+
+        <div th:replace="modal_fragments :: modal"></div>
+
+        <div th:replace="fragments :: pagination('/users','users')"></div>
+
+        <div th:replace="fragments :: footer"></div>
+      
+   </div>
+   <script th:src="@{/js/common_list.js}"></script>
+   <script type ="text/javascript">
+    moduleURL = "[[@{/users}]]";
+
+    $(document).ready(function (){
+        $(".link-delete").on("click",function(e){
+            e.preventDefault();  //nếu ko có dòng này sẽ gọi user/delete/...
+            showDeleteConfirmModal($(this),"user");
+        });
+    });
+
+   </script>
+</body>
+ </html>
+   

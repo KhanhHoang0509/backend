@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="page_head(title,remove)" th:remove="${remove}">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0">
+
+        <title>[[${title}]]</title>
+
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+        <!-- https://fontawesome.com/download =>nhấn download Free For Web, copy webfonts, copy css/all.css vào folder fontawesome -->
+        <!-- https://fontawesome.com/search =>search từ khóa pointrait =>chọn <i class="fa-solid fa-image-portrait"></i> -->
+        <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/style.css}" />
+        <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+        <script th:src="@{/js/common_form.js}"></script>
+        <script type="text/javascript" th:src="@{/js/common.js}"></script>
+</head>
+
+<body>
+    <!-- id/ email
+    thymeleaf fragment
+    tag: xóa thẻ bên ngoài(dưới ví dụ này là thẻ th), none: giữ thẻ bên ngoài -->
+    <th th:fragment="column_link(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
+        <a class="text-white" th:href="@{'/users/page/'+${currentPage}+ '?sortField='+ ${fieldName} + '&sortDir=' + ${sortField != fieldName ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+            [[${columnLabel}]]
+        </a>
+        <!--
+            <a class="text-white" th:if="${sortField == fieldName}"
+        th:href="@{'/users/page/'+${currentPage}+ '?sortField=' + ${fieldName} + '&sortDir=' +${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+        [[${columnLabel}]]
+        </a>
+        -->
+
+        <span th:if="${sortField == fieldName}"
+              th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+        </span>
+    </th>
+
+    <th th:fragment="column_link2(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
+        <a class="text-white" th:href="@{'/categories/page/'+${currentPage}+ '?sortField='+ ${fieldName} + '&sortDir=' + ${sortField != fieldName ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+            [[${columnLabel}]]
+        </a>
+        <!--
+            <a class="text-white" th:if="${sortField == fieldName}"
+        th:href="@{'/users/page/'+${currentPage}+ '?sortField=' + ${fieldName} + '&sortDir=' +${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+        [[${columnLabel}]]
+        </a>
+        -->
+
+        <span th:if="${sortField == fieldName}"
+              th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+        </span>
+    </th>
+
+    <th th:fragment="column_link3(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
+        <a class="text-white" th:href="@{'/brands/page/'+${currentPage}+ '?sortField='+ ${fieldName} + '&sortDir=' + ${sortField != name ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+            [[${columnLabel}]]
+        </a>
+        <!--
+            <a class="text-white" th:if="${sortField == fieldName}"
+        th:href="@{'/users/page/'+${currentPage}+ '?sortField=' + ${fieldName} + '&sortDir=' +${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+        [[${columnLabel}]]
+        </a>
+        -->
+
+        <span th:if="${sortField == fieldName}"
+              th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+        </span>
+    </th>
+
+    <th th:fragment="column_link4(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
+        <a class="text-white" th:href="@{'/products/page/'+${currentPage}+ '?sortField='+ ${fieldName} + '&sortDir=' + ${sortField != name ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+            [[${columnLabel}]]
+        </a>
+        <!--
+            <a class="text-white" th:if="${sortField == fieldName}"
+        th:href="@{'/users/page/'+${currentPage}+ '?sortField=' + ${fieldName} + '&sortDir=' +${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+        [[${columnLabel}]]
+        </a>
+        -->
+
+        <span th:if="${sortField == fieldName}"
+              th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+        </span>
+    </th>
+
+    <div th:fragment="filter_category(entity)">
+        <form th:action="@{${entity}+'/page/1'}" class="form-inline m-3">
+            <input type="hidden" name="sortField" th:value="${sortField}" />
+            <input type="hidden" name="sortDir" th:value="${sortDir}" />
+
+            Filter:&nbsp;
+            <input type="search" name="keyword" th:value="${keyword}" class="form-control" required>
+            &nbsp;&nbsp;
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i>
+            </button>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-secondary" onclick="clearFilter()">
+                <i class="fas fa-eraser"></i>
+            </button>
+        </form>
+
+        <div th:if="${message != null}" class="alert alert-success text-center">
+            [[${message}]]
+        </div>
+    </div>
+
+    <div th:fragment="search_form_and_message(entity)">
+        <form th:action="@{${entity}+'/page/1'}" class="form-inline m-3">
+            <input type="hidden" name="sortField" th:value="${sortField}" />
+            <input type="hidden" name="sortDir" th:value="${sortDir}" />
+
+            Filter:&nbsp;
+            <input type="search" name="keyword" th:value="${keyword}" class="form-control" required>
+            &nbsp;&nbsp;
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i>
+            </button>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-secondary" onclick="clearFilter()">
+                <i class="fas fa-eraser"></i>
+            </button>
+        </form>
+
+        <div th:if="${message != null}" class="alert alert-success text-center">
+            [[${message}]]
+        </div>
+    </div>
+
+    <div th:fragment="user_photos" th:remove="tag">
+        <span th:if="${user.photos == null}" class="fa fa-portait fa-3x icon-silver"></span>
+        <img th:if="${user.photos != null}" th:src="@{${user.photosImagePath}}" alt="" style="width: 100px;">
+    </div>
+
+    <div th:fragment="category_images" th:remove="tag">
+        <span th:if="${category.image == null}" class="fas fa-portrait fa-3x icon-silver"></span>
+        <img th:if="${category.image != null}" th:src="@{${category.photosImagePath}}" style="width: 100px;">
+    </div>
+
+    <div th:fragment="brand_logos" th:remove="tag">
+        <span th:if="${brand.logos == null}" class="fas fa-portrait fa-3x icon-silver"></span>
+        <img th:if="${brand.logos != null}" th:src="@{${brand.logosImagePath}}" style="width: 100px;">
+    </div>
+
+    <div th:fragment="product_images" th:remove="tag">
+        <span th:if="${product.mainImage == null}" class="fas fa-portrait fa-3x icon-silver"></span>
+        <img th:if="${product.mainImage != null}" th:src="@{${product.photosImagePath}}" style="width: 100px;">
+    </div>
+
+    <div th:fragment="status(enabled,entityName, entityURL)" th:remove="tag">
+            <a th:if="${enabled == true}"  th:href="@{${entityURL} + '/enabled/false'}" th:tittle="'Disable this ' + ${entityName}" class="fas fa-check-circle fa-2x icon-green"></a>
+            <a th:if="${enabled == false}"  th:href="@{${entityURL} + '/enabled/true'}" th:tittle="'Enabled this ' + ${entityName}"  class="fas fa-circle fa-2x icon-dark"></a>
+    </div>
+
+    <div th:fragment="edit(entityName, editURL)" th:remove="tag">
+        <a th:href="@{${editURL}}" th:tittle="'Edit this' + ${entityName}" class="fas fa-edit fa-2x icon-green"></a>
+    </div>
+
+    <div th:fragment="delete(entityName,entityId, deleteURL, visible)" th:remove="tag">
+        <th:block th:if="${visible}">
+            <a th:href="@{${deleteURL}}" th:entityId="${entityId}" th:tittle="'Delete this' + ${entityName}" class="fas fa-trash fa-2x icon-dark link-delete"></a>
+        </th:block>
+    </div>
+
+
+    <div th:fragment="pagination(moduleURL, entityName)">
+        <div class="text-center m-1" th:if ="${totalItems > 0}">  <!-- totalItems = 23 -->
+            <span>Showing [[${entityName}]] # [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
+        </div>
+        <div class="text-center m-1" th:unless="${totalItems > 0}"> <!-- unless ngược lại với if -->
+            <span>No [[${entityName}]] found</span>
+        </div>
+
+        <div th:if="${totalPages > 1}"> <!-- nếu tổng số trang > 1 thì mới hiển thị pagination -->
+            <nav>
+                <!-- First, Previous, Next, Last là disabled  -->
+                <!-- 1,2,3,... là active -->
+
+                <ul class="pagination justify-content-center flex-wrap"> <!-- flex-wrap để xuống dòng khi màn hình nhỏ -->
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a class="page-link" th:href="@{${moduleURL}+'/page/1?sortField=' +${sortField} + '&sortDir=' +${sortDir}}">First</a>
+                    </li>
+
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a class="page-link" th:href="@{${moduleURL}+'/page/' + ${currentPage - 1}+ '?sortField=' +${sortField} + '&sortDir=' +${sortDir}}">Previous</a>
+                    </li>
+
+                    <li th:class="${currentPage != i ? 'pageItem' : 'page-item active'}"
+                        th:each="i : ${#numbers.sequence(1, totalPages)}"> <!-- number.sequence của thymleaf-->
+                        <a class="page-link" th:href="@{${moduleURL}+'/page/' + ${i} + '?sortField=' +${sortField} + '&sortDir=' +${sortDir}}">[[${i}]]</a>
+                    </li>
+
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a class="page-link" th:href="@{${moduleURL}+'/page/' + ${currentPage + 1} + '?sortField=' +${sortField} + '&sortDir=' +${sortDir}}">Next</a>
+                    </li>
+
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a class="page-link" th:href="@{${moduleURL}+'/page/' + ${totalPages} + '?sortField=' +${sortField} + '&sortDir=' +${sortDir}}">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div th:fragment="footer" class="text-center m3 ">
+        <p>Shopping Cart Control Panel - Copyright &copy; ShoppingCart</p>
+    </div>
+</body>
+</html>

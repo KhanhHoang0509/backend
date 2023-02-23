@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('brands - Shopping Cart Admin','none')"></head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="navigation :: menu"></div>
+
+        <div class="exporter"> 
+            <h2>Manage brands</h2>
+            <a th:href="@{/brands/new}" class="fas fa-user-plus fa-2x icon-dark mr-2"></a>
+            <a th:href="@{/brands/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+            <a th:href="@{/brands/export/excel}"  class="fas fa-file-excel fa-2x icon-dark mr-2"></a>
+            <a th:href="@{/brands/export/pdf}"  class="fas fa-file-pdf fa-2x icon-dark"></a>
+        </div>
+
+        <!--/brands/page/1?sortField=firstName&sortDir=asc@keyword=bruce-->
+        <!-- name của input sẽ thành các param trên đường dẫn -->
+        <!-- Các thẻ input sẽ được chuyển thành Param -->
+        <!-- $ để lấy giá trị từ bên Model -->
+        <!-- Method Dạng GET sẽ chuyển các input thành các PARAM sau dấu chấm hỏi trên đường dẫn -->
+        
+        <div th:replace="fragments :: search_form_and_message('/brands')"></div>
+
+        <div class="full-details">
+            <table class="table table-bordered table-striped table-hover table-reponsive-xl">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="hideable-column">
+                            <th th:replace="fragments :: column_link3('id', 'ID', 'tag')"></th>
+                        </th>
+
+                        <th>Logo</th>
+
+                        <th th:replace="fragments :: column_link3('brands', 'Brands', 'none')"></th>
+
+                        <th th:replace="fragments :: column_link3('name', 'Name', 'none')"></th>
+
+                        <th>
+                            <span>Edit</span>
+                            <span>Delete</span>
+                        </th>
+                     
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="brand : ${listBrands}">
+                        <td class="hideable-column">[[${brand.id}]]</td>
+                        <!--id phải đúng trong entity-->
+
+                       <td>
+                           <div th:replace="fragments :: brand_logos" style="width:100"></div>
+                       </td>
+
+                        <td>
+                            <th:block th:each="cat : ${brand.categories}">
+                                <span class="badge badge-secondary" th:text="${cat.name}"></span>
+                            </th:block>
+                        </td>
+
+                       <td>[[${brand.name}]]</td>
+
+                       <td>
+                           <div th:replace="fragments :: edit('brand', '/brands/edit/' + ${brand.id})"></div>
+                           &nbsp;&nbsp;
+                           <div th:replace="fragments :: delete('brand', ${brand.id},'/brands/delete/' + ${brand.id}, true)"></div>
+                       </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:replace="modal_fragments :: modal"></div>
+
+        <div th:replace="fragments :: pagination('/brands','brands')"></div>
+
+        <div th:replace="fragments :: footer"></div>
+      
+   </div>
+
+   <script type ="text/javascript">
+    moduleURL = "[[@{/brands}]]";
+
+        $(document).ready(function (){
+            $(".link-delete").on("click",function(e){
+                e.preventDefault();
+                showDeleteConfirmModal($(this),"brand");
+            });
+        });
+    </script>
+    <script th:src="@{/js/common_list.js}"></script>
+</body>
+ </html>
+   

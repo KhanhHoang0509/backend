@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content" th:remove="tag">
+        <div class="form-group row">
+            <label for="" class="col-sm-2 col-form-label">Images:</label>
+            <div class="col-sm-10">
+                <input type="hidden" th:field="*{mainImage}"/>
+                <input type="file" id="fileImage" name="image" accept="image/png, image/jpg" class="mb-2"/>
+                <img th:src="@{${product.photosImagePath}}" alt="Photos Review" id="thumbnail" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</body>
+</html>

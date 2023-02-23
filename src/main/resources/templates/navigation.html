@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<body>
+<div th:fragment="menu">
+    <form th:action="@{/logout}" method="post" th:hidden="true" name="logoutForm">
+        <input type="submit">
+    </form>
+
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+        <a href="" class="navbar-brand" th:href="@{/}"> <img th:src="@{/images/shopping-logo.png}" width="100px" /> </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="topNavbar">
+            <ul class="navbar-nav">
+                <th:block sec:authorize="hasAuthority('Admin')">
+                    <li class="nav-item dropdown">
+                        <a th:href="@{/users}" class="nav-link dropdown-toggle" data-toggle="dropdown">Users</a>
+                        <div class="dropdown-menu">
+                            <a th:href="@{/users/new}" class="dropdown-item">Create New</a>
+                            <a th:href="@{/users}" class="dropdown-item">View All</a>
+                        </div>
+                    </li>
+                </th:block>
+
+                <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                    <li class="nav-item dropdown">
+                        <a th:href="@{/categories}"
+                           class="nav-link dropdown-toggle" data-toggle="dropdown">Categories</a>
+                        <div class="dropdown-menu">
+                            <a th:href="@{/categories/new}" class="dropdown-item">Create New</a>
+                            <a th:href="@{/categories}" class="dropdown-item">View All</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a th:href="@{/brands}" class="nav-link dropdown-toggle" data-toggle="dropdown">Brands</a>
+                        <div class="dropdown-menu">
+                            <a th:href="@{/brands/new}" class="dropdown-item">Create New</a>
+                            <a th:href="@{/brands}" class="dropdown-item">View All</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a th:href="@{/products}" class="nav-link dropdown-toggle" data-toggle="dropdown">Products</a>
+                        <div class="dropdown-menu">
+                            <a th:href="@{/products/new}" class="dropdown-item">Create New</a>
+                            <a th:href="@{/products}" class="dropdown-item">View All</a>
+                        </div>
+                    </li>
+                </th:block>
+
+                                <li><span class="fas fa-user fa-2x icon-silver"></span></li>
+
+                <li class="nav-item dropdown">
+                    <a th:href="@{/account}" sec:authentication="principal.fullName" class="nav-link dropdown-toggle" data-toggle="dropdown"></a><!--principal -> giong nhu Param hoac Session, lay tu Shoppinguserdetail-->
+                    <div class="dropdown-menu">
+                        <a href="" class="dropdown-item" id="logoutLink">Logout</a>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+</div>
+</body>
+</html>

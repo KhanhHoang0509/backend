@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0">
+
+	<title>Users - Shopping Cart Admin</title>
+
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+	<!-- https://fontawesome.com/download =>nhấn download Free For Web, copy webfonts, copy css/all.css vào folder fontawesome -->
+	<!-- https://fontawesome.com/search =>search từ khóa pointrait =>chọn <i class="fa-solid fa-image-portrait"></i> -->
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/style.css}" />
+	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+<body>
+   <div class="container-fluid">
+        <div>
+            <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+                <a th:href="@{/}" class="navbar-brand">
+                    <img th:src="@{/images/Shopping-logo.png}" alt="" width="200px">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="topNavbar">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a th:href="@{'/users'}" class="nav-link dropdown-toggle" data-toggle="dropdown" >Users</a>
+                            <div class="dropdown-menu">
+                                <a th:href="@{/users/new}" class="dropdown-item">Create New</a>
+                                <a th:href="@{/users}" class="dropdown-item">View All</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" th:href="@{/categories}">Categories</a>
+                            <div class="dropdown-menu">
+                                <a  class="dropdown-item" th:href="@{/categories/new}">Create New</a>
+                                <a  class="dropdown-item" th:href="@{/categories/}">View All</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        
+        <div class="exporter"> 
+            <h2 class="text-center">Manage Users</h2>
+            <a th:href="@{/users/new}" class="fas fa-user-plus fa-2x icon-dark mr-2"></a>
+            <a th:href="@{/users/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+            <a th:href="@{/users/export/excel}"  class="fas fa-file-excel fa-2x icon-dark mr-2"></a>
+            <a th:href="@{/users/export/pdf}"  class="fas fa-file-pdf fa-2x icon-dark"></a>
+        </div>
+
+        <div th:if="${message != null}" class="alert alert-success text-center">
+            [[${message}]]
+        </div>
+
+        <!--/users/page/1?sortField=firstName&sortDir=asc@keyword=bruce-->
+        <!-- name của input sẽ thành các param trên đường dẫn -->
+        <!-- Các thẻ input sẽ được chuyển thành Param -->
+        <!-- $ để lấy giá trị từ bên Model -->
+        <!-- Method Dạng GET sẽ chuyển các input thành các PARAM sau dấu chấm hỏi trên đường dẫn -->
+        <div class="filter">
+            <form th:action="@{/users/page/1}" class="form-inline m-3">
+                <input type="hidden" name="sortField" th:value="${sortField}" />
+                <input type="hidden" name="sortDir" th:value="${sortDir}" />
+
+                Filter:&nbsp;
+                <input type="search" name="keyword" th:value="${keyword}" class="form-control" required>
+                &nbsp;&nbsp;
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-secondary" onclick="clearFilter()">
+                    <i class="fas fa-eraser"></i>
+                </button>
+            </form>
+
+            <!-- <div th:if="${message != null}" class="alert alert-success text-center">
+                [[${message}]]
+            </div> -->
+        </div>
+
+        <!-- để refactor được mình phải nhìn ra những điểm giống nhau và khác nhau của code -->
+        <!-- id/ email -->
+
+        <div class="full-details">
+            <table class="table table-bordered table-striped table-hover table-reponsive-xl">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="hideable-column">
+                            <a class="text-white" th:if="${sortField != 'id'}"  
+                            th:href="@{'/users/page/'+${currentPage}+ '?sortField=id&sortDir=' +${sortDir}}">
+                            User ID
+                            </a>
+                            <a class="text-white" th:if="${sortField == 'id'}"  
+                            th:href="@{'/users/page/'+${currentPage}+ '?sortField=id&sortDir=' +${reverseSortDir}}">
+                            User ID
+                            </a>
+                            <span th:if="${sortField == 'id'}"
+                                    th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+                            </span>
+                        </th>
+
+                        <th>Photos</th>
+
+                        <th class="hideable-column">
+                            <a class="text-white" th:if="${sortField != 'email'}"  
+                            th:href="@{'/users/page/'+${currentPage}+ '?sortField=email&sortDir=' +${sortDir}}">
+                            Email
+                            </a>
+                            <a class="text-white" th:if="${sortField == 'email'}"  
+                            th:href="@{'/users/page/'+${currentPage}+ '?sortField=email&sortDir=' +${reverseSortDir}}">
+                            Email
+                            </a>
+                            <span th:if="${sortField == 'email'}"
+                                    th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+                            </span>
+                        </th>
+
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'firstName'}"  
+                            th:href="@{'/users/page/'+${currentPage}+ '?sortField=firstName&sortDir=' +${sortDir}}">
+                            First name
+                            </a>
+                            <a class="text-white" th:if="${sortField == 'firstName'}"  
+                            th:href="@{'/users/page/'+${currentPage}+ '?sortField=firstName&sortDir=' +${reverseSortDir}}">
+                            First name
+                            </a>
+                            <span th:if="${sortField == 'firstName'}"
+                                    th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'lastName'}"  
+                            th:href="@{'/users/page/'+${currentPage}+ '?sortField=lastName&sortDir=' +${sortDir}}">
+                            Last name
+                            </a>
+                            <a class="text-white" th:if="${sortField == 'lastName'}"  
+                            th:href="@{'/users/page/'+${currentPage}+ '?sortField=lastName&sortDir=' +${reverseSortDir}}">
+                            Last name
+                            </a>
+                            <span th:if="${sortField == 'lastName'}"
+                                    th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+                            </span>
+                        </th>
+
+                        <th>Roles</th>
+
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'enabled'}"  
+                            th:href="@{'/users/page/'+${currentPage}+ '?sortField=enabled&sortDir=' +${sortDir}}">
+                            Enabled
+                            </a>
+                            <a class="text-white" th:if="${sortField == 'enabled'}"  
+                            th:href="@{'/users/page/'+${currentPage}+ '?sortField=enabled&sortDir=' +${reverseSortDir}}">
+                            Enabled
+                            </a>
+                            <span th:if="${sortField == 'enabled'}"
+                                    th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+                            </span>
+                        </th>
+                        
+                        <th>
+                            <span>Edit</span>
+                              &nbsp; &nbsp; &nbsp;   
+                            <span>Delete</span>
+                        </th>
+                     
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${listUsers}">
+
+                        <td class="hideable-column">[[${user.id}]]</td>
+                        <td>
+                            <span th:if="${user.photos == null}" class="fa fa-portait fa-3x icon-silver"></span>
+                            <img th:if="${user.photos != null}" th:src="@{${user.photosImagePath}}" alt="" style="width: 100px;">
+                        </td>
+                        <td class="hideable-column">[[${user.email}]]</td>
+                        <td>[[${user.firstName}]]</td>
+                        <td>[[${user.lastName}]]</td>
+                        <td>[[${user.roles}]]</td>
+                        <td>
+                            <div>
+                                <a th:if="${user.enabled == true}"  th:href="@{'/users/' + ${user.id} + '/enabled/false'}" th:tittle="'Disable this ' + 'user'" class="fas fa-check-circle fa-2x icon-green"></a>
+                                <a th:if="${user.enabled == false}"  th:href="@{'/users/' + ${user.id} + '/enabled/true'}" th:tittle="'Enabled this ' + 'user'"  class="fas fa-circle fa-2x icon-dark"></a>
+                            </div>
+                        </td>
+                        <td>
+                            <a th:href="@{'/users/edit/' + ${user.id}}" th:tittle="'Edit this' + 'user'" class="fas fa-edit fa-2x icon-green"></a>
+                            &nbsp;&nbsp;
+                            <a th:href="@{'/users/delete/' + ${user.id}}" th:entityId="${user.id}" th:tittle="'Delete this' + 'user'" class="fas fa-trash fa-2x icon-dark link-delete"></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="less-details ">
+            <div class="row m-1" th:each="user : ${listUsers}">
+
+                <div class="col-4">
+                    <img th:src="@{/images/default-user.png}" width="50px" alt="">
+                </div>
+
+                <div class="col-8">
+                    <div > [[${user.fullName}]]</div>
+                    <div > [[${user.roles}]]</div>
+                    <div class="mt-2">
+                        <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green" th:href="@{'/users/' + ${user.id} + '/enabled/false'}" th:tittle="'Disable this ' + 'user'"></a>
+                        <a th:if="${user.enabled == false}"  th:href="@{'/users/' + ${user.id} + '/enabled/true'}" th:tittle="'Enabled this ' + 'user'"  class="fas fa-circle fa-2x icon-dark"></a>
+                        &nbsp;
+                        <a th:href="@{'/users/edit/' + ${user.id}}" th:tittle="'Edit this' + 'user'" class="fas fa-edit fa-2x icon-green"></a>
+                        &nbsp;&nbsp;
+                        <a th:href="@{'/users/delete/' + ${user.id}}" th:entityId="${user.id}" th:tittle="'Delete this' + 'user'" class="fas fa-trash fa-2x icon-dark link-delete"></a>
+                    </div>
+                </div>  
+            </div>
+        </div>
+
+        <div class="modal fade text-center" id="confirmModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-tittle">Delete Confirmation</h4>
+                        <button type="button" data-dismiss="modal" class="close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <span id="confirmText"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="" id="yesButton" class="btn btn-success">yes</a>
+                        <button type="button" class="btn btn-danger" data-dismiss ="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="pagination">
+            <div class="text-center m-1" th:if ="${totalItems > 0}">  <!-- totalItems = 23 -->
+                <span>Showing users # [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
+            </div>
+            <div class="text-center m-1" th:unless="${totalItems > 0}"> <!-- unless ngược lại với if -->
+                <span>No users found</span>
+            </div>
+
+            <div th:if="${totalPages > 1}"> <!-- nếu tổng số trang > 1 thì mới hiển thị pagination -->
+                <nav>
+                    <!-- First, Previous, Next, Last là disabled  -->
+                    <!-- 1,2,3,... là active -->
+
+                    <ul class="pagination justify-content-center flex-wrap"> <!-- flex-wrap để xuống dòng khi màn hình nhỏ -->
+                        <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                            <a class="page-link" th:href="@{'/users/page/1?sortField=' +${sortField} + '&sortDir=' +${sortDir}}">First</a>
+                        </li>
+
+                        <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                            <a class="page-link" th:href="@{'/users/page/' + ${currentPage - 1}+ '?sortField=' +${sortField} + '&sortDir=' +${sortDir}}">Previous</a>
+                        </li>
+
+                        <li th:class="${currentPage != i ? 'pageItem' : 'page-item active'}"
+                            th:each="i : ${#numbers.sequence(1, totalPages)}"> <!-- number.sequence của thymleaf-->
+                            <a class="page-link" th:href="@{'/users/page/' + ${i} + '?sortField=' +${sortField} + '&sortDir=' +${sortDir}}">[[${i}]]</a>
+                        </li>
+
+                        <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                            <a class="page-link" th:href="@{'/users/page/' + ${currentPage + 1} + '?sortField=' +${sortField} + '&sortDir=' +${sortDir}}">Next</a>
+                        </li>
+
+                        <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                            <a class="page-link" th:href="@{'/users/page/' + ${totalPages} + '?sortField=' +${sortField} + '&sortDir=' +${sortDir}}">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+
+        <div class="text-center m3 ">
+            <p>Shopping Cart Control Panel - Coppyright &copy; ShoppingCart</p>
+        </div>
+      
+   </div>
+   <script th:src="@{/js/common_list.js}"></script>
+   <script type ="text/javascript">
+    moduleURL = "[[@{/users}]]";
+
+    $(document).ready(function (){
+        $(".link-delete").on("click",function(e){
+            e.preventDefault();  //nếu ko có dòng này sẽ gọi user/delete/...
+            showDeleteConfirmModal($(this),"user");
+        });
+    });
+   </script>
+</body>
+ </html>
+   
