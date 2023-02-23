@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "products")//
-public class Products extends IdBaseEntity{
+public class Products extends IdBaseEntity{//
 	@Column(length = 225, nullable = false, unique = true)
 	private String name;
 
